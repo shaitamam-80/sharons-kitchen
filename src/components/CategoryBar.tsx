@@ -36,11 +36,11 @@ export default function CategoryBar({ categories, activeCategory, recipes, onSel
                   ? 'var(--color-terracotta)'
                   : 'var(--color-cream-dark)',
                 color: isActive
-                  ? '#FFF8F0'
+                  ? '#FAF9F6'
                   : 'var(--color-brown-light)',
                 boxShadow: isActive
-                  ? '0 2px 10px rgba(190, 90, 56, 0.25), inset 0 1px 0 rgba(255,255,255,0.15)'
-                  : '0 1px 2px rgba(44, 29, 19, 0.04)',
+                  ? '0 2px 10px rgba(43, 122, 120, 0.3), inset 0 1px 0 rgba(255,255,255,0.15)'
+                  : '0 1px 2px rgba(23, 37, 42, 0.04)',
               }}
               onClick={() => onSelect(cat.id)}
             >

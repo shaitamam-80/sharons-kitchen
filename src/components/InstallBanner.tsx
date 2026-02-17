@@ -30,9 +30,9 @@ export default function InstallBanner() {
     <div
       className="fixed bottom-0 left-0 right-0 px-5 py-4 flex items-center justify-between z-[150]"
       style={{
-        background: '#FFFBF5',
-        boxShadow: '0 -4px 20px rgba(44,29,19,0.08)',
-        borderTop: '1px solid rgba(44,29,19,0.05)',
+        background: '#FFFFFF',
+        boxShadow: '0 -4px 20px rgba(23,37,42,0.08)',
+        borderTop: '1px solid rgba(23,37,42,0.05)',
       }}
     >
       <span className="text-[0.85rem]" style={{ color: 'var(--color-brown)', fontFamily: 'var(--font-body)' }}>
@@ -40,7 +40,7 @@ export default function InstallBanner() {
       </span>
       <button
         className="px-5 py-2.5 border-none rounded-xl font-heebo text-[0.85rem] font-medium cursor-pointer transition-all duration-200 active:scale-95"
-        style={{ background: 'var(--color-terracotta)', color: '#FFF8F0' }}
+        style={{ background: 'var(--color-terracotta)', color: '#FAF9F6' }}
         onClick={handleInstall}
       >
         התקנה
