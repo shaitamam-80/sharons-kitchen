@@ -5,7 +5,7 @@ interface HeaderProps {
   search: string
   onSearchChange: (value: string) => void
   changesCount: number
-  onExport: () => Promise<number>
+  onExport: () => Promise<{ count: number; error?: string }>
   onToast: (msg: string) => void
 }
 
@@ -63,8 +63,19 @@ export default function Header({ totalRecipes, search, onSearchChange, changesCo
                   backdropFilter: 'blur(8px)',
                 }}
                 onClick={async () => {
-                  const count = await onExport()
-                  onToast(`יוצאו ${count} שינויים`)
+                  try {
+                    const result = await onExport()
+                    if (result.error === 'cancelled') return
+                    if (result.error === 'clipboard') {
+                      onToast('השינויים הועתקו ללוח — הדביקו בהודעה')
+                    } else if (result.error === 'failed') {
+                      onToast('לא הצלחנו לשלוח — נסו שוב')
+                    } else {
+                      onToast(`יוצאו ${result.count} שינויים`)
+                    }
+                  } catch {
+                    onToast('שגיאה בשליחה — נסו שוב')
+                  }
                 }}
               >
                 שלח שינויים ({changesCount})

@@ -86,8 +86,7 @@ export function useRecipeStore() {
 
   const changesCount = useMemo(() => Object.keys(overrides).length, [overrides])
 
-  const exportChanges = useCallback(async () => {
-    // Build a detailed export with recipe names for readability
+  const exportChanges = useCallback(async (): Promise<{ count: number; error?: string }> => {
     const changes = Object.entries(overrides).map(([idStr, override]) => {
       const id = Number(idStr)
       const recipe = defaultRecipes.find(r => r.id === id)
@@ -107,23 +106,61 @@ export function useRecipeStore() {
     }
 
     const json = JSON.stringify(exportData, null, 2)
-    const blob = new Blob([json], { type: 'application/json' })
-    const file = new File([blob], `sharon-changes-${Date.now()}.json`, { type: 'application/json' })
 
-    // Try Web Share API first (works great on Android)
-    if (navigator.share && navigator.canShare?.({ files: [file] })) {
-      await navigator.share({ files: [file], title: 'שינויים במתכונים' })
-      return changes.length
+    // Strategy 1: Web Share API with file
+    try {
+      const blob = new Blob([json], { type: 'application/json' })
+      const file = new File([blob], `sharon-changes-${Date.now()}.json`, { type: 'application/json' })
+      if (navigator.share && navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file], title: 'שינויים במתכונים' })
+        return { count: changes.length }
+      }
+    } catch (e) {
+      if (e instanceof Error && e.name === 'AbortError') {
+        return { count: 0, error: 'cancelled' }
+      }
+      // Fall through to next strategy
     }
 
-    // Fallback: download
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = file.name
-    a.click()
-    URL.revokeObjectURL(url)
-    return changes.length
+    // Strategy 2: Web Share API with text (works in more PWA contexts)
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: 'שינויים במתכונים - המטבח של שרון',
+          text: json,
+        })
+        return { count: changes.length }
+      }
+    } catch (e) {
+      if (e instanceof Error && e.name === 'AbortError') {
+        return { count: 0, error: 'cancelled' }
+      }
+      // Fall through to next strategy
+    }
+
+    // Strategy 3: Copy to clipboard
+    try {
+      await navigator.clipboard.writeText(json)
+      return { count: changes.length, error: 'clipboard' }
+    } catch {
+      // Fall through to download
+    }
+
+    // Strategy 4: Download file
+    try {
+      const blob = new Blob([json], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `sharon-changes-${Date.now()}.json`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+      return { count: changes.length }
+    } catch {
+      return { count: 0, error: 'failed' }
+    }
   }, [overrides])
 
   const openRecipe = useCallback((id: number) => setSelectedRecipeId(id), [])
