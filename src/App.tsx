@@ -25,6 +25,9 @@ export default function App() {
         totalRecipes={store.recipes.length}
         search={store.search}
         onSearchChange={store.setSearch}
+        changesCount={store.changesCount}
+        onExport={store.exportChanges}
+        onToast={showToast}
       />
 
       <CategoryBar

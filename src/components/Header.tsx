@@ -4,9 +4,12 @@ interface HeaderProps {
   totalRecipes: number
   search: string
   onSearchChange: (value: string) => void
+  changesCount: number
+  onExport: () => Promise<number>
+  onToast: (msg: string) => void
 }
 
-export default function Header({ totalRecipes, search, onSearchChange }: HeaderProps) {
+export default function Header({ totalRecipes, search, onSearchChange, changesCount, onExport, onToast }: HeaderProps) {
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -26,9 +29,22 @@ export default function Header({ totalRecipes, search, onSearchChange }: HeaderP
             </h1>
             <p className="text-[0.8rem] text-cream/70 font-light mt-0.5">ספר המתכונים האישי</p>
           </div>
-          <span className="bg-white/15 text-cream px-3 py-1 rounded-[20px] text-[0.75rem] font-medium backdrop-blur-sm">
-            {totalRecipes} מתכונים
-          </span>
+          <div className="flex items-center gap-2">
+            {changesCount > 0 && (
+              <button
+                className="bg-gold/90 text-brown px-3 py-1 rounded-[20px] text-[0.75rem] font-medium backdrop-blur-sm border-none cursor-pointer hover:bg-gold transition-colors"
+                onClick={async () => {
+                  const count = await onExport()
+                  onToast(`יוצאו ${count} שינויים`)
+                }}
+              >
+                שלח שינויים ({changesCount})
+              </button>
+            )}
+            <span className="bg-white/15 text-cream px-3 py-1 rounded-[20px] text-[0.75rem] font-medium backdrop-blur-sm">
+              {totalRecipes} מתכונים
+            </span>
+          </div>
         </div>
 
         <div className="relative">

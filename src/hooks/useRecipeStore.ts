@@ -84,6 +84,48 @@ export function useRecipeStore() {
     }))
   }, [setOverrides])
 
+  const changesCount = useMemo(() => Object.keys(overrides).length, [overrides])
+
+  const exportChanges = useCallback(async () => {
+    // Build a detailed export with recipe names for readability
+    const changes = Object.entries(overrides).map(([idStr, override]) => {
+      const id = Number(idStr)
+      const recipe = defaultRecipes.find(r => r.id === id)
+      return {
+        id,
+        name: recipe?.name ?? `מתכון ${id}`,
+        ...(override.instructions !== undefined ? { instructions: override.instructions } : {}),
+        ...(override.notes !== undefined ? { notes: override.notes } : {}),
+      }
+    })
+
+    const exportData = {
+      exportedAt: new Date().toISOString(),
+      device: navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop',
+      changesCount: changes.length,
+      changes,
+    }
+
+    const json = JSON.stringify(exportData, null, 2)
+    const blob = new Blob([json], { type: 'application/json' })
+    const file = new File([blob], `sharon-changes-${Date.now()}.json`, { type: 'application/json' })
+
+    // Try Web Share API first (works great on Android)
+    if (navigator.share && navigator.canShare?.({ files: [file] })) {
+      await navigator.share({ files: [file], title: 'שינויים במתכונים' })
+      return changes.length
+    }
+
+    // Fallback: download
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = file.name
+    a.click()
+    URL.revokeObjectURL(url)
+    return changes.length
+  }, [overrides])
+
   const openRecipe = useCallback((id: number) => setSelectedRecipeId(id), [])
   const closeRecipe = useCallback(() => setSelectedRecipeId(null), [])
 
@@ -104,5 +146,7 @@ export function useRecipeStore() {
     closeRecipe,
     saveInstructions,
     saveNotes,
+    exportChanges,
+    changesCount,
   }
 }
