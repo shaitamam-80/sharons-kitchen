@@ -15,24 +15,24 @@ export default function RecipeCard({ recipe, onClick, staggerIndex = 0 }: Recipe
     <article
       className={`relative cursor-pointer transition-all duration-300 group opacity-0 animate-fade-in-up hover:-translate-y-0.5 active:scale-[0.98] ${staggerClass}`}
       style={{
-        background: '#FFFBF5',
+        background: '#FFFFFF',
         borderRadius: '14px',
         padding: '20px',
-        boxShadow: '0 1px 3px rgba(44,29,19,0.06), 0 4px 12px rgba(44,29,19,0.04)',
-        border: '1px solid rgba(44, 29, 19, 0.04)',
+        boxShadow: '0 1px 3px rgba(23,37,42,0.05), 0 4px 12px rgba(23,37,42,0.03)',
+        border: '1px solid rgba(23, 37, 42, 0.05)',
       }}
       onClick={onClick}
     >
       {/* Top accent on hover */}
       <div
         className="absolute top-0 right-4 left-4 h-[2px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        style={{ background: 'linear-gradient(90deg, var(--color-terracotta), var(--color-gold))' }}
+        style={{ background: 'linear-gradient(90deg, var(--color-terracotta), var(--color-sage))' }}
       />
 
       {hasContent && (
         <span
           className="absolute top-4 left-4 w-[7px] h-[7px] rounded-full"
-          style={{ background: 'var(--color-sage)', boxShadow: '0 0 0 2px rgba(107,143,107,0.15)' }}
+          style={{ background: 'var(--color-terracotta)', boxShadow: '0 0 0 2px rgba(43,122,120,0.15)' }}
           title="יש הוראות הכנה"
         />
       )}

@@ -39,7 +39,7 @@ export default function RecipeGrid({ filteredRecipes, groupedRecipes, categories
                   <span className="text-[1.3rem]">{cat.emoji}</span>
                   <h2
                     className="font-suez text-[1.25rem]"
-                    style={{ color: 'var(--color-terracotta-dark)' }}
+                    style={{ color: 'var(--color-terracotta)' }}
                   >
                     {cat.name}
                   </h2>

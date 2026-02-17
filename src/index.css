@@ -1,23 +1,24 @@
 @import "tailwindcss";
 
 @theme {
-  --color-cream: #FAF4EB;
-  --color-cream-dark: #EDE4D8;
-  --color-cream-warm: #F5ECE0;
-  --color-terracotta: #BE5A38;
-  --color-terracotta-light: #D4785C;
-  --color-terracotta-dark: #943E24;
-  --color-brown: #2C1D13;
-  --color-brown-light: #5A4234;
-  --color-brown-medium: #7A6354;
-  --color-sage: #6B8F6B;
-  --color-sage-light: #A3BFA0;
-  --color-sage-dark: #4A6B4A;
-  --color-gold: #C4924F;
-  --color-gold-light: #DCBA89;
+  /* Ocean Breeze — Mediterranean palette */
+  --color-cream: #FAF9F6;
+  --color-cream-dark: #EFF5F5;
+  --color-cream-warm: #F3F1ED;
+  --color-terracotta: #2B7A78;
+  --color-terracotta-light: #3AAFA9;
+  --color-terracotta-dark: #1F5F5B;
+  --color-brown: #17252A;
+  --color-brown-light: #3D5A5E;
+  --color-brown-medium: #5E8185;
+  --color-sage: #DEA47E;
+  --color-sage-light: #E8C4A8;
+  --color-sage-dark: #C4865C;
+  --color-gold: #C9956A;
+  --color-gold-light: #E0C4A8;
   --color-gold-warm: #B8853E;
-  --color-rose: #C88B84;
-  --color-olive: #8A8462;
+  --color-rose: #D4978F;
+  --color-olive: #7A9E8E;
 
   --font-body: 'Frank Ruhl Libre', 'Heebo', serif;
   --font-display: 'Suez One', serif;
@@ -29,12 +30,12 @@
   --radius-md: 14px;
   --radius-lg: 22px;
 
-  --shadow-card: 0 1px 3px rgba(44, 29, 19, 0.06), 0 4px 12px rgba(44, 29, 19, 0.04);
-  --shadow-card-hover: 0 4px 12px rgba(44, 29, 19, 0.08), 0 12px 28px rgba(44, 29, 19, 0.06);
-  --shadow-elevated: 0 8px 32px rgba(44, 29, 19, 0.12), 0 2px 8px rgba(44, 29, 19, 0.06);
-  --shadow-sm: 0 2px 8px rgba(44, 29, 19, 0.08);
-  --shadow-md: 0 4px 16px rgba(44, 29, 19, 0.10);
-  --shadow-lg: 0 8px 24px rgba(44, 29, 19, 0.14);
+  --shadow-card: 0 1px 3px rgba(23, 37, 42, 0.05), 0 4px 12px rgba(23, 37, 42, 0.03);
+  --shadow-card-hover: 0 4px 12px rgba(23, 37, 42, 0.07), 0 12px 28px rgba(23, 37, 42, 0.05);
+  --shadow-elevated: 0 8px 32px rgba(23, 37, 42, 0.12), 0 2px 8px rgba(23, 37, 42, 0.06);
+  --shadow-sm: 0 2px 8px rgba(23, 37, 42, 0.07);
+  --shadow-md: 0 4px 16px rgba(23, 37, 42, 0.09);
+  --shadow-lg: 0 8px 24px rgba(23, 37, 42, 0.13);
 
   --animate-fade-in-up: fade-in-up 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
@@ -65,16 +66,16 @@ body {
   line-height: 1.65;
 }
 
-/* Notebook paper texture */
+/* Subtle ocean texture */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   background:
     url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E"),
-    radial-gradient(ellipse at 15% 30%, rgba(190, 90, 56, 0.035) 0%, transparent 50%),
-    radial-gradient(ellipse at 85% 60%, rgba(107, 143, 107, 0.025) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 90%, rgba(196, 146, 79, 0.03) 0%, transparent 40%);
+    radial-gradient(ellipse at 15% 30%, rgba(43, 122, 120, 0.025) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 60%, rgba(222, 164, 126, 0.02) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 90%, rgba(58, 175, 169, 0.02) 0%, transparent 40%);
   pointer-events: none;
   z-index: 0;
 }
@@ -87,7 +88,7 @@ h1, h2, h3 {
 
 /* Selection */
 ::selection {
-  background: rgba(190, 90, 56, 0.15);
+  background: rgba(43, 122, 120, 0.15);
   color: var(--color-brown);
 }
 
@@ -98,7 +99,7 @@ h1, h2, h3 {
 /* Modal scrollbar */
 .recipe-scroll::-webkit-scrollbar { width: 3px; }
 .recipe-scroll::-webkit-scrollbar-track { background: transparent; }
-.recipe-scroll::-webkit-scrollbar-thumb { background: rgba(44, 29, 19, 0.1); border-radius: 3px; }
+.recipe-scroll::-webkit-scrollbar-thumb { background: rgba(23, 37, 42, 0.1); border-radius: 3px; }
 
 /* Staggered card animations */
 .stagger-1 { animation-delay: 0.04s; }
@@ -112,7 +113,7 @@ h1, h2, h3 {
 .ingredient-struck {
   opacity: 0.3;
   text-decoration: line-through;
-  text-decoration-color: var(--color-brown-medium);
+  text-decoration-color: var(--color-sage-dark);
   text-decoration-thickness: 1.5px;
   transition: all 0.3s ease;
 }

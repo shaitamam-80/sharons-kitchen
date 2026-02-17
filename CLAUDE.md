@@ -32,7 +32,7 @@ C:\Users\shait\sharons-kitchen\
 
 ## כללים
 - הכל בעברית, RTL
-- עיצוב חם — גווני טרקוטה (#C75B39), קרם (#FFF8F0), זהב (#D4A373), ירוק מרווה (#8B9E7E)
+- עיצוב Ocean Breeze — גווני טורקיז (#2B7A78), לבן שמנתי (#FAF9F6), חול חם (#DEA47E), כהה עמוק (#17252A)
 - פונטים: Heebo (body) + Suez One (כותרות)
 - המתכונים ב-src/data/recipes.ts, שינויים של המשתמש ב-localStorage (אותו מפתח: sharons-kitchen-data)
 - שרון צריכה יכולת להוסיף/לערוך הוראות וטיפים
