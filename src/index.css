@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #FFF8F0;
+  --color-cream-dark: #F5EDE3;
+  --color-terracotta: #C75B39;
+  --color-terracotta-light: #E8856A;
+  --color-terracotta-dark: #A04428;
+  --color-brown: #3D2B1F;
+  --color-brown-light: #5C4333;
+  --color-sage: #8B9E7E;
+  --color-sage-light: #B5C4AA;
+  --color-gold: #D4A373;
+  --color-gold-light: #E8C9A0;
+  --color-rose: #D4928B;
+
+  --font-heebo: 'Heebo', sans-serif;
+  --font-suez: 'Suez One', serif;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+
+  --shadow-sm: 0 2px 8px rgba(61, 43, 31, 0.08);
+  --shadow-md: 0 4px 16px rgba(61, 43, 31, 0.12);
+  --shadow-lg: 0 8px 24px rgba(61, 43, 31, 0.18);
+
+  --animate-fade-in-up: fade-in-up 0.4s ease forwards;
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Base styles */
+body {
+  font-family: var(--font-heebo);
+  background: var(--color-cream);
+  color: var(--color-brown);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Background pattern */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(199, 91, 57, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(139, 158, 126, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(212, 163, 115, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Scrollbar hiding for category bar */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { scrollbar-width: none; }

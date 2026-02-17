@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#C75B39">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="המטבח של שרון">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Suez+One&display=swap" rel="stylesheet">
+<title>המטבח של שרון</title>
+<style>
+:root {
+  --cream: #FFF8F0;
+  --cream-dark: #F5EDE3;
+  --terracotta: #C75B39;
+  --terracotta-light: #E8856A;
+  --terracotta-dark: #A04428;
+  --brown: #3D2B1F;
+  --brown-light: #5C4333;
+  --sage: #8B9E7E;
+  --sage-light: #B5C4AA;
+  --gold: #D4A373;
+  --gold-light: #E8C9A0;
+  --rose: #D4928B;
+  --shadow: rgba(61, 43, 31, 0.08);
+  --shadow-md: rgba(61, 43, 31, 0.12);
+  --shadow-lg: rgba(61, 43, 31, 0.18);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-lg: 24px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Heebo', sans-serif;
+  background: var(--cream);
+  color: var(--brown);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Background pattern */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(199, 91, 57, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(139, 158, 126, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(212, 163, 115, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===== HEADER ===== */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: linear-gradient(135deg, var(--terracotta) 0%, var(--terracotta-dark) 100%);
+  padding: 0;
+  box-shadow: 0 4px 20px var(--shadow-lg);
+}
+
+.header-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px 20px 16px;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.app-title {
+  font-family: 'Suez One', serif;
+  font-size: 1.8rem;
+  color: var(--cream);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  letter-spacing: -0.5px;
+}
+
+.app-subtitle {
+  font-size: 0.8rem;
+  color: rgba(255, 248, 240, 0.7);
+  font-weight: 300;
+  margin-top: 2px;
+}
+
+.recipe-count-badge {
+  background: rgba(255,255,255,0.15);
+  color: var(--cream);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  backdrop-filter: blur(4px);
+}
+
+/* Search */
+.search-container {
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px 12px 44px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.95);
+  font-family: 'Heebo', sans-serif;
+  font-size: 0.95rem;
+  color: var(--brown);
+  outline: none;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.search-input::placeholder {
+  color: var(--gold);
+}
+
+.search-input:focus {
+  box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+  background: white;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gold);
+  font-size: 1.1rem;
+}
+
+.clear-search {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--cream-dark);
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: var(--brown-light);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.clear-search.visible { opacity: 1; }
+
+/* ===== CATEGORIES ===== */
+.categories-bar {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  background: var(--cream);
+  border-bottom: 1px solid rgba(61, 43, 31, 0.06);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.categories-bar::-webkit-scrollbar { display: none; }
+
+.categories-inner {
+  display: flex;
+  gap: 8px;
+  padding: 12px 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.cat-btn {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border: 1.5px solid rgba(61, 43, 31, 0.1);
+  border-radius: 24px;
+  background: white;
+  font-family: 'Heebo', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--brown-light);
+  cursor: pointer;
+  transition: all 0.25s;
+  white-space: nowrap;
+}
+
+.cat-btn:hover {
+  border-color: var(--terracotta-light);
+  color: var(--terracotta);
+}
+
+.cat-btn.active {
+  background: var(--terracotta);
+  color: white;
+  border-color: var(--terracotta);
+  box-shadow: 0 2px 8px rgba(199, 91, 57, 0.25);
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px 16px 100px;
+  position: relative;
+  z-index: 1;
+}
+
+.category-section {
+  margin-bottom: 32px;
+}
+
+.category-title {
+  font-family: 'Suez One', serif;
+  font-size: 1.3rem;
+  color: var(--terracotta-dark);
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--gold-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.category-title .cat-emoji {
+  font-size: 1.4rem;
+}
+
+.category-title .cat-count {
+  font-family: 'Heebo', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--gold);
+  background: var(--cream-dark);
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-right: auto;
+}
+
+/* ===== RECIPE CARDS ===== */
+.recipes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.recipe-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 18px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border: 1px solid rgba(61, 43, 31, 0.05);
+  box-shadow: 0 2px 8px var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.recipe-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--terracotta);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.recipe-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px var(--shadow-md);
+}
+
+.recipe-card:hover::before {
+  opacity: 1;
+}
+
+.recipe-card:active {
+  transform: translateY(-1px);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.recipe-name {
+  font-family: 'Suez One', serif;
+  font-size: 1.05rem;
+  color: var(--brown);
+  line-height: 1.4;
+  flex: 1;
+}
+
+.recipe-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.meta-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: var(--brown-light);
+  background: var(--cream);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.meta-tag .icon { font-size: 0.8rem; }
+
+.ingredients-preview {
+  font-size: 0.78rem;
+  color: var(--brown-light);
+  opacity: 0.7;
+  line-height: 1.5;
+  margin-top: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.has-instructions-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sage);
+}
+
+/* ===== RECIPE DETAIL MODAL ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(61, 43, 31, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.35s;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-sheet {
+  background: var(--cream);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  -webkit-overflow-scrolling: touch;
+}
+
+.modal-overlay.open .modal-sheet {
+  transform: translateY(0);
+}
+
+.modal-handle {
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+  position: sticky;
+  top: 0;
+  background: var(--cream);
+  z-index: 10;
+}
+
+.modal-handle span {
+  width: 40px;
+  height: 4px;
+  background: rgba(61, 43, 31, 0.15);
+  border-radius: 2px;
+}
+
+.modal-header {
+  padding: 0 24px 16px;
+  border-bottom: 1px solid rgba(61, 43, 31, 0.06);
+}
+
+.modal-title {
+  font-family: 'Suez One', serif;
+  font-size: 1.5rem;
+  color: var(--terracotta-dark);
+  margin-bottom: 8px;
+}
+
+.modal-meta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.modal-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--brown-light);
+  background: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+.modal-body {
+  padding: 20px 24px 40px;
+}
+
+.section-title {
+  font-family: 'Suez One', serif;
+  font-size: 1.1rem;
+  color: var(--brown);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ingredient-list {
+  list-style: none;
+  margin-bottom: 28px;
+}
+
+.ingredient-item {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(61, 43, 31, 0.04);
+  font-size: 0.92rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.2s;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.ingredient-item:hover {
+  background: rgba(199, 91, 57, 0.04);
+}
+
+.ingredient-item.checked {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+
+.ingredient-bullet {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+
+.ingredient-item.checked .ingredient-bullet {
+  background: var(--sage);
+}
+
+.instructions-area {
+  margin-top: 8px;
+}
+
+.instructions-text {
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: var(--brown-light);
+  white-space: pre-wrap;
+}
+
+.instructions-empty {
+  text-align: center;
+  padding: 24px;
+  background: white;
+  border-radius: var(--radius-sm);
+  border: 2px dashed rgba(61, 43, 31, 0.1);
+}
+
+.instructions-empty p {
+  font-size: 0.85rem;
+  color: var(--gold);
+  margin-top: 8px;
+}
+
+.instructions-empty .empty-icon {
+  font-size: 2rem;
+  margin-bottom: 4px;
+}
+
+.edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  background: var(--terracotta);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'Heebo', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: all 0.2s;
+}
+
+.edit-btn:hover {
+  background: var(--terracotta-dark);
+}
+
+.edit-textarea {
+  width: 100%;
+  min-height: 150px;
+  padding: 14px;
+  border: 2px solid var(--gold-light);
+  border-radius: var(--radius-sm);
+  font-family: 'Heebo', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--brown);
+  background: white;
+  resize: vertical;
+  outline: none;
+  direction: rtl;
+  transition: border-color 0.2s;
+}
+
+.edit-textarea:focus {
+  border-color: var(--terracotta);
+}
+
+.edit-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.save-btn {
+  padding: 10px 24px;
+  background: var(--sage);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'Heebo', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.save-btn:hover { background: #7A8D6E; }
+
+.cancel-btn {
+  padding: 10px 24px;
+  background: var(--cream-dark);
+  color: var(--brown-light);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'Heebo', sans-serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancel-btn:hover { background: #E8DDD0; }
+
+/* ===== NO RESULTS ===== */
+.no-results {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.no-results .icon { font-size: 3rem; margin-bottom: 12px; }
+.no-results p { color: var(--gold); font-size: 0.95rem; }
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--brown);
+  color: white;
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  z-index: 300;
+  transition: transform 0.3s;
+  white-space: nowrap;
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ===== INSTALL PROMPT ===== */
+.install-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 -4px 20px var(--shadow-md);
+  z-index: 150;
+  transform: translateY(100%);
+  transition: transform 0.4s;
+}
+
+.install-banner.show { transform: translateY(0); }
+
+.install-text {
+  font-size: 0.85rem;
+  color: var(--brown);
+}
+
+.install-text strong { color: var(--terracotta); }
+
+.install-btn {
+  padding: 10px 20px;
+  background: var(--terracotta);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'Heebo', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.install-dismiss {
+  background: none;
+  border: none;
+  color: var(--brown-light);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 480px) {
+  .app-title { font-size: 1.5rem; }
+  .recipes-grid { grid-template-columns: 1fr; }
+  .header-content { padding: 16px 16px 12px; }
+  .modal-body { padding: 16px 20px 40px; }
+}
+
+@media (min-width: 768px) {
+  .modal-sheet {
+    border-radius: var(--radius-lg);
+    max-height: 85vh;
+    margin-bottom: 20px;
+  }
+  .modal-overlay {
+    align-items: center;
+  }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.recipe-card {
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.recipe-card:nth-child(2) { animation-delay: 0.03s; }
+.recipe-card:nth-child(3) { animation-delay: 0.06s; }
+.recipe-card:nth-child(4) { animation-delay: 0.09s; }
+.recipe-card:nth-child(5) { animation-delay: 0.12s; }
+.recipe-card:nth-child(6) { animation-delay: 0.15s; }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+// ========================================
+// RECIPE DATA
+// ========================================
+const recipes = [
+  // ===== עוגיות =====
+  {
+    id: 1, name: "עוגיות שיבולת שועל - אנזק", source: "נלה", category: "cookies",
+    ingredients: ["1 כוס קוקוס", "1 כוס קוואקר", "1 כוס סוכר", "1 כוס קמח", "125 גרם מרגרינה", "2 כפות גולדן סירופ", "½ כפית סודה לשתיה", "3 כפות מים רותחים"],
+    temp: "180", time: "10 דקות", instructions: "", notes: ""
+  },
+  {
+    id: 2, name: "עוגיות שנמסות בפה ללא ביצים", category: "cookies",
+    ingredients: ["2 כוסות קמח", "200 גרם חמאה", "3 שקיות סוכר וניל", "2 כפות סוכר", "כ-20 שקדים לקישוט"],
+    temp: "180", time: "25 דקות", instructions: "", notes: ""
+  },
+  {
+    id: 3, name: "מעמול של פורטון", category: "cookies",
+    ingredients: ["500 גרם מרגרינה", "1 ק\"ג קמח", "2 כפות סוכר", "2 סוכר וניל", "2 אבקת אפייה", "מים לפי הצורך", "תמרים מעורבבים עם שמן קינמון ואגוזים"],
+    temp: "", time: "", instructions: "", notes: "מילוי: תמרים עם שמן, קינמון ואגוזים"
+  },
+  {
+    id: 4, name: "עוגיות שוקולד צ'יפס", category: "cookies",
+    ingredients: ["200 גרם חמאה", "½ כוס סוכר", "1½ כוס סוכר חום", "2 ביצים", "2½ כפיות תמצית וניל", "2½ כוסות קמח", "1 כפית אבקת אפיה", "½ כפית מלח", "כפית סודה לשתיה", "200 גרם שוקולד צ'יפס"],
+    temp: "180", time: "10 דקות", instructions: "", notes: ""
+  },
+  {
+    id: 5, name: "עוגיות סוכר חום", category: "cookies",
+    ingredients: ["200 גרם קמח", "2 כפיות אבקת אפיה", "115 גרם חמאה", "קורט מלח", "225 גרם סוכר", "1 ביצה", "¼ כפית תמצית שקדים", "60 גרם סוכר חום"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 6, name: "כעכים פורטון", category: "cookies",
+    ingredients: ["1 קג קמח", "שמרים", "1½ חבילת מרגרינה", "¾ כוס שמן", "2¼ כפיות מלח", "1 כוס מים פושרים", "שומשום", "ביצה"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 7, name: "עוגיות מכונה קרולה", category: "cookies",
+    ingredients: ["1 ק\"ג קמח", "2 חבילות מרגרינה בטעם חמאה (200 גרם)", "1½ כוס סוכר", "4 ביצים", "2 חבילות אבקת אפייה", "3 סוכר וניל", "מיץ מתפוז אחד"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 8, name: "עוגיות שושנים", category: "cookies",
+    ingredients: ["2 כוסות קמח", "2 חלמונים", "2 כפות סוכר", "1 חבילת חמאה", "1 כפית שמרים", "2 חלבונים", "1 כוס סוכר"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 9, name: "עוגיות בולו", category: "cookies",
+    ingredients: ["3 ביצים", "1 כוס סוכר", "1 כוס שמן", "1 כוס אגוזי מלך", "2 כפות שומשום", "1 כף אניס טחון", "2 סוכר וניל", "4½ כוסות קמח", "1 אבקת אפיה", "100 גרם שוקלד", "גרידת תפוז"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 10, name: "פלורנטינים", category: "cookies",
+    ingredients: ["בצק פריך: 200 גרם חמאה", "100 גרם אבקת סוכר", "325 גרם קמח", "גרידת לימון", "תמצית וניל", "1 ביצה", "מילוי: 75 גרם חמאה", "75 גרם סוכר", "25 גרם דבש", "25 גרם שמנת", "25 גרם גלוקוז", "תמצית וניל", "170 גרם שקדים פרוסים"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 11, name: "עוגיות חמאה זילוף", category: "cookies",
+    ingredients: ["225 גרם חמאה", "110 גרם אבקת סוכר", "1 ביצה", "225 גרם קמח", "110 גרם קורנפלור"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 12, name: "עוגיות ביסקוטי", category: "cookies",
+    ingredients: ["2 ביצים", "2 חלמונים", "200 גרם סוכר", "סוכר וניל", "ליקר אמרטו או תמצית שקדים", "350 גרם קמח", "1 כפית אבקת אפייה", "½ כפית סודה לשתיה", "300 גרם שקדים"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 13, name: "עוגיות טחינה", category: "cookies",
+    ingredients: ["150 גרם חמאה", "160 גרם סוכר", "180 גרם טחינה", "וניל", "260 גרם קמח", "אבקת אפיה", "שומשום"],
+    temp: "", time: "", instructions: "", notes: "כמויות גדולות: 750 חמאה, 780 סוכר, 540 טחינה, 1260 קמח, 24 אבקת אפיה"
+  },
+  {
+    id: 14, name: "בראוניז", category: "cookies",
+    ingredients: ["75 גרם שוקולד מריר", "200 גרם חמאה", "½ כוס אבקת קקאו", "1¼ כוסות סוכר", "3 ביצים", "⅓ כוס שמנת חמוצה", "תמצית וניל", "קורט מלח", "½ כוס קמח", "אגוזים"],
+    temp: "", time: "", instructions: "", notes: "תבנית 24×24"
+  },
+  {
+    id: 15, name: "דובשניות", category: "cookies",
+    ingredients: ["120 גרם דבש", "120 גרם סוכר חום", "80 גרם שמן", "תבלינים: קינמון, זנגוויל, הל, ציפורן", "320 גרם קמח", "10 גרם אבקת אפיה", "1 ביצה", "כפית סודה לשתיה"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 16, name: "עוגיות אלפחורס", category: "cookies",
+    ingredients: ["200 גרם חמאה", "1 כוס סוכר", "2 כוסות קמח", "1 כוס קורנפלור", "3 כפות מים", "3 חלמונים"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 17, name: "עוגיות בסקוטי לתינוקות", category: "cookies",
+    ingredients: ["5 ביצים מופרדות", "1 כוס סוכר", "1 כוס קמח", "1 כף שמן", "תמצית וניל", "אבקת סוכר לפיזור"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 18, name: "מרי בארי אנרגי בר", source: "Mary Berry", category: "cookies",
+    ingredients: ["200 גרם חמאה", "200 גרם סוכר מסקבדו", "100 גרם גולדן סירופ", "50 גרם זרעי חמניה", "50 גרם קראנברי", "100 גרם צימוקים", "50 גרם קוקוס", "100 גרם פיצפוצי אורז", "150 גרם קוואקר"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 19, name: "אלפחורס שוקולד וריבת חלב", category: "cookies",
+    ingredients: ["175 גרם חמאה רכה", "100 גרם אבקת סוכר", "2 ביצים", "גרידת תפוז", "90 גרם קמח", "15 גרם קקאו", "250 גרם קורנפלור", "10 גרם אבקת אפיה", "ריבת חלב למלית", "קוקוס לציפוי"],
+    temp: "", time: "", instructions: "", notes: "יוצא כ-40 עוגיות"
+  },
+  {
+    id: 20, name: "ריפעת הלוחשת לאוכל", source: "יהודית אביב", category: "cookies",
+    ingredients: ["1 כוס סוכר", "1½ כוס סוכר", "2 סוכר וניל", "3 ביצים", "4 כפות שומשום קלוי", "3-4 כפות שומר טחון", "½ כוס מים", "גרידת תפוז", "קורט מלח", "1 ק\"ג קמח", "2 אבקת אפיה"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 21, name: "סהרוני קוקוס", category: "cookies",
+    ingredients: ["200 גרם חמאה", "560 גרם קמח", "2 ביצים", "200 גרם סוכר", "½ כוס שמן", "100 גרם קוקוס", "1 אבקת אפיה"],
+    temp: "", time: "", instructions: "", notes: "לקרר שעה לפני אפייה"
+  },
+  {
+    id: 22, name: "עוגיות פולי קפה", category: "cookies",
+    ingredients: ["1 כף נס קפה מומסת במעט מים", "90 גרם חמאה", "85 גרם אבקת סוכר", "1 חלמון", "20 גרם קקאו", "160 גרם קמח"],
+    temp: "", time: "", instructions: "", notes: "3 גרם לעוגיה"
+  },
+
+  // ===== עוגות =====
+  {
+    id: 23, name: "עוגת דבש", category: "cakes",
+    ingredients: ["4 ביצים", "1 כוס שמן", "1 כוס דבש", "1 כוס בירה שחורה", "2 תפוחים מגורדים", "3 כוסות קמח", "1 אבקת אפיה", "קורט מלח", "כפית קינמון", "½ כפית ציפורן", "¼ כפית אגוז מוסקט"],
+    temp: "", time: "", instructions: "", notes: "2 תבניות אינגליש קיק"
+  },
+  {
+    id: 24, name: "עוגת בננות", category: "cakes",
+    ingredients: ["1 כוס סוכר", "2 ביצים", "½ כוס שמן או 100 גרם חמאה", "תמצית וניל", "4 בננות", "1¼ כוסות קמח תופח", "1 כפית סודה לשתיה", "תוספות: אגוזים, פקאן, קוקוס, שוקולד"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 25, name: "עוגת תפוחים עם מיונז", category: "cakes",
+    ingredients: ["1½ כוסות קמח", "1 כפית סודה לשתיה", "1 כפית אבקת אפיה", "1 כוס סוכר", "½ כוס מיונז", "¼ כוס חלב", "2 ביצים", "כפית קינמון", "¼ כפית מלח", "גרידת לימון", "מיץ מלימון אחד", "2 תפוחים קלופים וחתוכים לקוביות", "¾ כוס צימוקים", "3 כפות סוכר + 1 כפית קינמון לפיזור"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 26, name: "עוגת תפוזים", category: "cakes",
+    ingredients: ["4 ביצים מופרדות", "1½ כוסות סוכר", "2 כוסות קמח תופח", "1 כף קורנפלור", "1 סוכר וניל", "גרידת תפוז", "¾ כוס מיץ תפוזים"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 27, name: "אינגליש קייק", category: "cakes",
+    ingredients: ["100 גרם חמאה", "3 ביצים מופרדות", "1½ כוסות סוכר", "1 אשל", "תמצית וניל", "גרידת תפוז או לימון", "2½ כוסות קמח תופח", "פירות מסוכרים או שוקולד צ'יפס"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 28, name: "עוגת גזר", source: "נלה", category: "cakes",
+    ingredients: ["2 כוסות סוכר", "3 ביצים", "½ כוס שמן", "3 כוסות גזר מגורד", "1½ כוסות קמח", "½ כוס קמח תופח", "1 כפית סודה לשתיה", "וניל", "צימוקים", "קינמון", "אגוזים"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 29, name: "עוגת שוקולד", source: "נלה", category: "cakes",
+    ingredients: ["200 גרם חמאה", "2½ כוסות סוכר", "4 ביצים", "3 כוסות קמח", "1 כוס מים", "תמצית וניל", "רום", "כפית נס קפה", "1 אבקת אפיה", "1 כפית סודה לשתיה", "⅔ כוס קקאו + ⅔ כוס מים רותחים"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 30, name: "עוגת שוקולד לפסח", category: "cakes",
+    ingredients: ["100 גרם חמאה", "⅔ כוס סוכר", "6 ביצים", "200 גרם שוקולד מריר", "100 גרם אגוזים"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 31, name: "עוגת שיש", category: "cakes",
+    ingredients: ["3 ביצים מופרדות", "100 גרם חמאה", "1 כוס סוכר", "2½ כוסות קמח תופח", "1 סוכר וניל", "¾ כוס חלב", "2 כפות קקאו"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 32, name: "עוגת קצף וקצפת", category: "cakes",
+    ingredients: ["לבצק: 100 גרם חמאה", "2 חלמונים", "2 כפות גדושות סוכר", "1½ כוס קמח תופח", "לקצף: 4 חלבונים", "1⅓ כוס סוכר", "למילוי: 1 שמנת מתוקה, 1 כפית נס קפה, 3 כפות סוכר", "לציפוי: 1 כף קקאו, 1½ כף סוכר, מעט חלב, מעט חמאה"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 33, name: "עוגת שוקולד חמה", category: "cakes",
+    ingredients: ["להמסה: 200 גרם שוקולד, 150 גרם חמאה", "1 כוס סוכר", "3 ביצים", "½ כוס מים", "1 כוס קמח תופח", "¼ כוס קקאו", "תמצית וניל", "רוטב: 100 גרם שוקולד, 125 שמנת מתוקה, 2 כפות ליקר שוקולד"],
+    temp: "170", time: "40 דקות", instructions: "", notes: ""
+  },
+  {
+    id: 34, name: "עוגה לפסח קוקוס וקרמל", category: "cakes",
+    ingredients: ["3 ביצים", "1 פחית חלב מרוכז", "100 גרם קוקוס", "¾ כוס חלב", "לקרמל: ½ כוס סוכר, 2 כפות מים"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 35, name: "עוגת וופל חלבה", category: "cakes",
+    ingredients: ["200 גרם חמאה", "200 גרם חלבה", "8 כפות סוכר", "6 כפות מים", "4 כפות קקאו", "2 כפות קורנפלור", "תמצית וניל", "כף דבש"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 36, name: "עוגת סולת", source: "גלי", category: "cakes",
+    ingredients: ["1 כוס סולת", "1 כוס קוקוס", "20 גרם אבקת אפיה", "2 חבילות סוכר וניל", "1 כוס מיץ תפוזים", "1 כוס שמן", "4 ביצים", "רוטב: 3 כוסות סוכר, ½ כוס מים, מיץ מלימון"],
+    temp: "", time: "", instructions: "לאחר אפיה לצקת סירופ: 3 כוסות סוכר + ½ כוס מים להרתיח לסירופ, להוסיף מיץ מלימון", notes: ""
+  },
+  {
+    id: 37, name: "פאי פקאן", category: "cakes",
+    ingredients: ["לבצק: 100 גרם סוכר, 200 גרם חמאה, 1 ביצה, 350 גרם קמח", "למלית: 150 גרם סוכר לקרמל, 1 שמנת מתוקה, 150 גרם פקאנים"],
+    temp: "", time: "", instructions: "אפיה עיוורת לבצק. להכין קרמל מ-150 גרם סוכר, לצקת שמנת, לאפות 10 דקות", notes: ""
+  },
+  {
+    id: 38, name: "עוגת פרג", category: "cakes",
+    ingredients: ["225 גרם פרג", "5 כפות קמח/קורנפלור", "100 גרם שוקולד מגורד", "150 גרם חמאה", "½ כוס אבקת סוכר", "6 חלמונים", "קוניאק", "6 חלבונים", "1½ כוס אבקת סוכר"],
+    temp: "", time: "", instructions: "לערבב קמח, שוקולד ופרג ביחד. לערבב היטב ½ כוס אבקת סוכר, חמאה וחלמונים ביחד, להוסיף קוניאק. להקציף חלבונים עם 1½ אבקת סוכר. לערבב את 3 המסות ביחד בתנועות קיפול.", notes: "2 תבניות אינגליש קיק או תבנית עגולה"
+  },
+  {
+    id: 39, name: "מאפינס מתוק", category: "cakes",
+    ingredients: ["① לערבב: 2 כוסות קמח תופח", "מעט מלח", "¾ כוס סוכר", "② לערבב: 1 ביצה טרופה", "1½ כוסות חלב/מיץ תפוזים", "2 כפיות מיץ לימון", "¼ כוס שמן סויה", "½ כוס קוביות אננס מיובש / שוקולד / חמוציות"],
+    temp: "", time: "20-25 דקות", instructions: "1. מערבבים את תערובת ① (קמח תופח, מלח, סוכר).\n2. בנפרד מערבבים את תערובת ② (ביצה טרופה, חלב/מיץ תפוזים, מיץ לימון, שמן סויה).\n3. מחברים את שתי התערובות ומערבבים יחד.\n   ⚠️ אין לערבב יותר מדי — שלא יקשה את המאפינס!\n4. משמנים את התבנית ואופים 20-25 דקות.\n5. בדיקת מוכנות: קיסם/שיפוד יוצא נקי.", notes: "טיפ של שרון: לא לערבב יותר מדי את הבלילה — זה מה שעושה את ההבדל בין מאפינס רך לקשה."
+  },
+  {
+    id: 40, name: "עוגת שמרים שוקולד", category: "cakes",
+    ingredients: ["לבצק: 2 כפות שמרים יבשים, 5 כוסות קמח, ½ כוס חלב, ½ כוס מים, 2 ביצים, 200 גרם חמאה, 2 חבילות סוכר וניל, 5 כפות סוכר", "מילוי שוקולד: 200 גרם חמאה, 1 כוס סוכר, ½ כוס קקאו, 1 כפית קינמון, 100 גרם שוקולד"],
+    temp: "", time: "", instructions: "מילוי שוקולד: להמיס בסיר", notes: ""
+  },
+  {
+    id: 41, name: "עוגת גזר מיכל אפשטיין", source: "מיכל אפשטיין", category: "cakes",
+    ingredients: ["180 גרם סוכר", "2 ביצים", "80 גרם שמן", "2 גזרים מגוררים בפומפייה", "130 גרם קמח", "כפית אבקת אפייה", "כפית קינמון", "קורט מלח"],
+    temp: "170", time: "30 דקות",
+    instructions: "העוגה:\n1. מערבבים במיקסר עם וו גיטרה את הסוכר והביצים. מוסיפים את השמן ואת הגזרים. בקערה נפרדת מערבבים את הקמח, אבקת האפייה והמלח.\n2. מוסיפים את תערובת הקמח למיקסר ומערבבים עד איחוד. מעבירים לתבנית עגולה משומנת.\n\nהקראמבל:\n1. מערבבים את כל המרכיבים בקערה עד לקבלת מרקם גושי.\n2. מפזרים את רוב הקראמבל על תערובת העוגה ואופים ב-170 מעלות כ-30 דקות.\n3. מוציאים את העוגה מהתבנית ומצננים.\n\nהקרם (פרוסטינג):\n1. מערבבים את כל המרכיבים במיקסר עד איחוד ושומרים במקרר.\n2. כשהעוגה מגיעה לטמפרטורת החדר חוצים אותה לרוחבה ומורחים שכבה יפה של קרם. סוגרים ומצפים את העוגה כולה בקרם. מעל הקרם מפזרים את שאר הקראמבל.",
+    notes: "קראמבל צ'ילי: 100 גרם קמח, 100 גרם חמאה, 100 גרם סוכר, ½ כפית צ'ילי, קורט מלח. קרם גבינה: 100 גרם גבינת שמנת, 100 גרם חמאה, 50 גרם סוכר."
+  },
+
+  // ===== לחמים ומאפים =====
+  {
+    id: 42, name: "לחמניות באן שלי", category: "breads",
+    ingredients: ["500 גרם קמח", "1 אבקת אפיה", "½ כפית סודה לשתיה", "50 גרם סוכר", "12 גרם שמרים", "300-350 מ\"ל מים", "2 כפות שמן", "1 כף חומץ", "1 כפית מלח"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 43, name: "סופגניות", category: "breads",
+    ingredients: ["6½ כוסות קמח", "2 כפות שמרים יבשים", "150 גרם חמאה", "3 ביצים או 2 ביצים + 2 חלמונים", "1 כפית מלח", "8 כפות סוכר", "½ כפית ברנדי", "1½ כוס חלב פושר או מים", "תמצית וניל", "גרידת לימון"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 44, name: "קרקרים", category: "breads",
+    ingredients: ["120 גרם קמח כוסמין", "120 גרם קוואקר", "100 גרם גרעיני חמניות", "50 גרם שומשום", "50 גרם זרעי פשתן", "20 גרם קצח", "1 כפית מלח", "2 כפות שמן זית", "500 מ\"ל מים"],
+    temp: "170", time: "15 דקות לחתוך + 30 דקות", instructions: "", notes: ""
+  },
+  {
+    id: 45, name: "קראסונים של גלי", source: "גלי", category: "breads",
+    ingredients: ["1 ק\"ג קמח", "6 כפות סוכר", "2 כפות שמרים", "4 ביצים", "1½ כוסות מים", "200 גרם חמאה", "200 גרם חמאה למריחה"],
+    temp: "", time: "", instructions: "לחלק ל-8. סירופ סוכר: 1 כוס מים + 1 כוס סוכר להרתיח.", notes: ""
+  },
+  {
+    id: 46, name: "לחם פרג", category: "breads",
+    ingredients: ["ראש עיסה: 650 גרם קמח, 650 גרם מים, 5 גרם שמרים", "600 גרם קמח לבן", "200 גרם קמח מלא", "450 גרם שיפון", "35 גרם גלוטן", "5 גרם סופר גרין", "700 גרם מים", "5 גרם שמרים לחים", "180 גרם פרג", "160 גרם גרעיני חמניה", "45 גרם מלח"],
+    temp: "", time: "", instructions: "", notes: "5 כיכרות, 650 גרם לכיכר"
+  },
+  {
+    id: 47, name: "לחם דגנים", category: "breads",
+    ingredients: ["600 גרם קמח לבן", "400 גרם קמח שיפון", "26 גרם גלוטן", "40 גרם אגרנו", "2 כפות שמרים יבשים", "100 גרם אגוזי מלך", "20 גרם מלח", "650 מ\"ל מים"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 48, name: "לחמניות כמון ושום קונפי", category: "breads",
+    ingredients: ["1 ק\"ג קמח לחם", "50 מ\"ל שמן זית", "2 כפות שמרים יבשים", "כף מלח", "כף סוכר", "30 גרם זרעי כמון", "600 מ\"ל מים", "3 ראשי שום"],
+    temp: "", time: "", instructions: "שום קונפי: לעטוף 3 ראשי שום בנייר כסף, לבשל בתנור עם מעט שמן זית, להוציא את התוכן.", notes: "50 גרם ללחמניה"
+  },
+  {
+    id: 49, name: "לחם פקאן מייפל", category: "breads",
+    ingredients: ["350 גרם קמח מלא", "350 גרם קמח לחם", "1 כף מלח", "200 גרם פקאן", "2 כפות שמרים יבשים", "375 מ\"ל מים", "150 מ\"ל סירופ מייפל"],
+    temp: "", time: "", instructions: "", notes: "2 כיכרות"
+  },
+  {
+    id: 50, name: "לחמניות מאודות באן", category: "breads",
+    ingredients: ["1 ק\"ג קמח", "20 גרם אבקת אפיה", "1 כפית סודה לשתיה", "100 גרם סוכר", "2 כפות שמרים יבשים", "500-600 מ\"ל מים", "4 כפות שמן", "2 כפות חומץ", "כף מלח"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 51, name: "לחם קאסטן שלי", category: "breads",
+    ingredients: ["500 גרם קמח לבן", "500 גרם קמח מלא", "2 כפות שמרים יבשים", "¼ כוס סוכר/סילאן/דבש", "¼ כוס שמן זית", "600 מ\"ל מים"],
+    temp: "", time: "", instructions: "", notes: "לציפוי: קוואקר, שומשום, פשתן, זרעי חמניה"
+  },
+
+  // ===== בצקים =====
+  {
+    id: 52, name: "בצק בוריקטס", category: "doughs",
+    ingredients: ["3 כוסות קמח", "1 אבקת אפיה", "1 סודה לשתיה", "⅓ כפית מלח", "½ כוס שמנת/יוגורט", "¼ כוס חלב", "½ כוס שמן"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 53, name: "בלינצ'ס", category: "doughs",
+    ingredients: ["2 כוסות קמח", "2¾ כוסות חלב או מים", "4 ביצים", "4 כפות שמן", "קורט מלח"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 54, name: "בצק אמפנדה צ'יאגו", category: "doughs",
+    ingredients: ["500 גרם קמח", "1 כפית מלח", "40 גרם שומן", "50 מ\"ל קשאסה/רום", "180 מ\"ל מים", "ביצה"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 55, name: "בצק קיש", category: "doughs",
+    ingredients: ["550 גרם קמח", "343 גרם חמאה", "107 גרם מים קרים", "כפית מלח", "כף סוכר", "2 כפות חומץ"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 56, name: "בצק פריך מתוק", category: "doughs",
+    ingredients: ["350 גרם קמח", "100 גרם אבקת סוכר", "1 ביצה גדולה", "וניל או גרידת לימון"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+
+  // ===== קרמים ומילויים =====
+  {
+    id: 57, name: "קרם שקדים", category: "creams",
+    ingredients: ["100 גרם חמאה", "100 גרם אבקת סוכר", "1 ביצה", "100 גרם אבקת שקדים", "תמצית שקדים", "20 גרם קורנפלור"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 58, name: "קרם פטיסייר", category: "creams",
+    ingredients: ["500 מ\"ל חלב", "2 ביצים", "110 גרם סוכר", "50 גרם קורנפלור", "מקל וניל"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 59, name: "רויאל", category: "creams",
+    ingredients: ["500 מ\"ל שמנת", "500 מ\"ל חלב", "8 ביצים", "40 גרם קמח", "אגוז מוסקט", "מלח", "פלפל"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 60, name: "מילוי פרג", category: "creams",
+    ingredients: ["200 גרם פרג", "180 גרם חלב", "80 גרם דבש", "50 גרם חמאה", "גרידת לימון", "100 גרם סוכר", "50 גרם פירורי עוגיות"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 61, name: "מילוי גבינה", category: "creams",
+    ingredients: ["500 גרם גבינה", "2 חלמונים", "¼ כוס סוכר", "2 כפות קמח", "סוכר וניל", "צימוקים"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+
+  // ===== שונות =====
+  {
+    id: 62, name: "קוסקוס", category: "misc",
+    ingredients: ["1 ק\"ג סולת", "4 כפיות שטוחות מלח", "¼ כוס שמן", "¾ כוס מים"],
+    temp: "", time: "", instructions: "½ שעה בישול. להוסיף 2 כוסות מים. לבשל שוב ½ שעה. להוסיף 2 כוסות מים. 10 דקות מנוחה ולסנן.", notes: ""
+  },
+  {
+    id: 63, name: "צ'ימיצ'ורי", category: "misc",
+    ingredients: ["1 צרור פטרוזליה", "1 ראש שום", "1 בצל", "1 פלפל אדום", "½ כוס שמן", "½ כוס חומץ", "פלפל חריף", "אורגנו יבש"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 64, name: "חמוצים שאופיר אוהב", category: "misc",
+    ingredients: ["3 כוסות מים", "1 כוס חומץ", "¾ כוס סוכר", "2 כפות שטוחות מלח גס", "גינגר", "שום", "למון גראס"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+  {
+    id: 65, name: "קנידלך", category: "misc",
+    ingredients: ["2½ כוסות קמח מצה", "2½ כוסות מים רותחים או מרק", "בצל גדול מטוגן", "1 כף מלח", "ביצים", "פטרוזליה קצוצה"],
+    temp: "", time: "", instructions: "", notes: ""
+  },
+];
+
+// ========================================
+// CATEGORIES CONFIG
+// ========================================
+const categories = [
+  { id: 'all', name: 'הכל', emoji: '📖' },
+  { id: 'cookies', name: 'עוגיות', emoji: '🍪' },
+  { id: 'cakes', name: 'עוגות', emoji: '🎂' },
+  { id: 'breads', name: 'לחמים ומאפים', emoji: '🍞' },
+  { id: 'doughs', name: 'בצקים', emoji: '🥟' },
+  { id: 'creams', name: 'קרמים ומילויים', emoji: '🍮' },
+  { id: 'misc', name: 'שונות', emoji: '🥗' },
+];
+
+// ========================================
+// APP STATE
+// ========================================
+let state = {
+  search: '',
+  activeCategory: 'all',
+  selectedRecipe: null,
+  editingInstructions: false,
+  editingNotes: false,
+};
+
+// Load saved instructions/notes from localStorage
+function loadSaved() {
+  try {
+    const saved = localStorage.getItem('sharons-kitchen-data');
+    if (saved) {
+      const data = JSON.parse(saved);
+      recipes.forEach(r => {
+        if (data[r.id]) {
+          if (data[r.id].instructions) r.instructions = data[r.id].instructions;
+          if (data[r.id].notes !== undefined) r.notes = data[r.id].notes;
+        }
+      });
+    }
+  } catch(e) {}
+}
+
+function saveData() {
+  try {
+    const data = {};
+    recipes.forEach(r => {
+      if (r.instructions || r.notes) {
+        data[r.id] = { instructions: r.instructions, notes: r.notes };
+      }
+    });
+    localStorage.setItem('sharons-kitchen-data', JSON.stringify(data));
+  } catch(e) {}
+}
+
+loadSaved();
+
+// ========================================
+// FILTERING
+// ========================================
+function getFilteredRecipes() {
+  let filtered = recipes;
+  
+  if (state.activeCategory !== 'all') {
+    filtered = filtered.filter(r => r.category === state.activeCategory);
+  }
+  
+  if (state.search.trim()) {
+    const term = state.search.trim().toLowerCase();
+    filtered = filtered.filter(r => {
+      return r.name.toLowerCase().includes(term) ||
+             r.ingredients.some(i => i.toLowerCase().includes(term)) ||
+             (r.source && r.source.toLowerCase().includes(term)) ||
+             (r.notes && r.notes.toLowerCase().includes(term));
+    });
+  }
+  
+  return filtered;
+}
+
+function getGroupedRecipes(filtered) {
+  const groups = {};
+  filtered.forEach(r => {
+    if (!groups[r.category]) groups[r.category] = [];
+    groups[r.category].push(r);
+  });
+  return groups;
+}
+
+// ========================================
+// RENDER
+// ========================================
+function render() {
+  const app = document.getElementById('app');
+  const filtered = getFilteredRecipes();
+  
+  app.innerHTML = `
+    ${renderHeader()}
+    ${renderCategories()}
+    <main class="main-content">
+      ${filtered.length === 0 ? renderNoResults() : 
+        (state.activeCategory === 'all' && !state.search ? renderGrouped(filtered) : renderFlat(filtered))}
+    </main>
+    ${renderModal()}
+    <div class="toast" id="toast"></div>
+  `;
+  
+  bindEvents();
+}
+
+function renderHeader() {
+  const total = recipes.length;
+  return `
+    <header class="app-header">
+      <div class="header-content">
+        <div class="header-top">
+          <div>
+            <h1 class="app-title">🍰 המטבח של שרון</h1>
+            <p class="app-subtitle">ספר המתכונים האישי</p>
+          </div>
+          <span class="recipe-count-badge">${total} מתכונים</span>
+        </div>
+        <div class="search-container">
+          <input type="text" class="search-input" id="searchInput" 
+                 placeholder="חיפוש מתכון, מרכיב..." 
+                 value="${state.search}">
+          <span class="search-icon">🔍</span>
+          <button class="clear-search ${state.search ? 'visible' : ''}" id="clearSearch">✕</button>
+        </div>
+      </div>
+    </header>
+  `;
+}
+
+function renderCategories() {
+  return `
+    <nav class="categories-bar">
+      <div class="categories-inner">
+        ${categories.map(c => `
+          <button class="cat-btn ${state.activeCategory === c.id ? 'active' : ''}" 
+                  data-category="${c.id}">
+            ${c.emoji} ${c.name}
+            ${c.id !== 'all' ? `<span style="opacity:0.7;margin-right:2px">(${recipes.filter(r => r.category === c.id).length})</span>` : ''}
+          </button>
+        `).join('')}
+      </div>
+    </nav>
+  `;
+}
+
+function renderGrouped(filtered) {
+  const groups = getGroupedRecipes(filtered);
+  const order = ['cookies', 'cakes', 'breads', 'doughs', 'creams', 'misc'];
+  
+  return order.filter(catId => groups[catId]).map(catId => {
+    const cat = categories.find(c => c.id === catId);
+    const items = groups[catId];
+    return `
+      <section class="category-section">
+        <h2 class="category-title">
+          <span class="cat-emoji">${cat.emoji}</span>
+          ${cat.name}
+          <span class="cat-count">${items.length}</span>
+        </h2>
+        <div class="recipes-grid">
+          ${items.map(renderCard).join('')}
+        </div>
+      </section>
+    `;
+  }).join('');
+}
+
+function renderFlat(filtered) {
+  return `
+    <div class="recipes-grid">
+      ${filtered.map(renderCard).join('')}
+    </div>
+  `;
+}
+
+function renderCard(recipe) {
+  const preview = recipe.ingredients.slice(0, 4).join(' · ');
+  return `
+    <article class="recipe-card" data-recipe-id="${recipe.id}">
+      ${recipe.instructions ? '<span class="has-instructions-badge" title="יש הוראות הכנה"></span>' : ''}
+      <div class="card-header">
+        <h3 class="recipe-name">${recipe.name}</h3>
+      </div>
+      <div class="recipe-meta">
+        ${recipe.temp ? `<span class="meta-tag"><span class="icon">🌡️</span>${recipe.temp}°</span>` : ''}
+        ${recipe.time ? `<span class="meta-tag"><span class="icon">⏱️</span>${recipe.time}</span>` : ''}
+        ${recipe.source ? `<span class="meta-tag"><span class="icon">👩‍🍳</span>${recipe.source}</span>` : ''}
+      </div>
+      <p class="ingredients-preview">${preview}</p>
+    </article>
+  `;
+}
+
+function renderNoResults() {
+  return `
+    <div class="no-results">
+      <div class="icon">🔍</div>
+      <p>לא נמצאו מתכונים${state.search ? ` עבור "${state.search}"` : ''}</p>
+    </div>
+  `;
+}
+
+function renderModal() {
+  const r = state.selectedRecipe;
+  if (!r) return '<div class="modal-overlay" id="modal"></div>';
+  
+  return `
+    <div class="modal-overlay open" id="modal">
+      <div class="modal-sheet">
+        <div class="modal-handle" id="modalHandle"><span></span></div>
+        <div class="modal-header">
+          <h2 class="modal-title">${r.name}</h2>
+          <div class="modal-meta">
+            ${r.temp ? `<span class="modal-meta-item">🌡️ ${r.temp}°</span>` : ''}
+            ${r.time ? `<span class="modal-meta-item">⏱️ ${r.time}</span>` : ''}
+            ${r.source ? `<span class="modal-meta-item">👩‍🍳 ${r.source}</span>` : ''}
+          </div>
+        </div>
+        <div class="modal-body">
+          <h3 class="section-title">🧂 מרכיבים</h3>
+          <ul class="ingredient-list">
+            ${r.ingredients.map((ing, i) => `
+              <li class="ingredient-item" data-ing="${i}">
+                <span class="ingredient-bullet"></span>
+                ${ing}
+              </li>
+            `).join('')}
+          </ul>
+          
+          <h3 class="section-title">📝 הוראות הכנה</h3>
+          <div class="instructions-area">
+            ${state.editingInstructions ? `
+              <textarea class="edit-textarea" id="instructionsEdit">${r.instructions || ''}</textarea>
+              <div class="edit-actions">
+                <button class="save-btn" id="saveInstructions">שמירה</button>
+                <button class="cancel-btn" id="cancelInstructions">ביטול</button>
+              </div>
+            ` : (r.instructions ? `
+              <div class="instructions-text">${r.instructions}</div>
+              <button class="edit-btn" id="editInstructions">✏️ עריכה</button>
+            ` : `
+              <div class="instructions-empty">
+                <div class="empty-icon">📝</div>
+                <p>עדיין לא נוספו הוראות הכנה</p>
+                <button class="edit-btn" id="editInstructions" style="margin-top:16px">✏️ הוסיפי הוראות</button>
+              </div>
+            `)}
+          </div>
+          
+          ${r.notes || state.editingNotes ? `
+            <h3 class="section-title" style="margin-top:28px">💡 הערות וטיפים</h3>
+            <div class="instructions-area">
+              ${state.editingNotes ? `
+                <textarea class="edit-textarea" id="notesEdit">${r.notes || ''}</textarea>
+                <div class="edit-actions">
+                  <button class="save-btn" id="saveNotes">שמירה</button>
+                  <button class="cancel-btn" id="cancelNotes">ביטול</button>
+                </div>
+              ` : `
+                <div class="instructions-text">${r.notes}</div>
+                <button class="edit-btn" id="editNotes">✏️ עריכה</button>
+              `}
+            </div>
+          ` : `
+            <div style="margin-top:20px">
+              <button class="edit-btn" id="addNotes" style="background:var(--gold)">💡 הוסיפי הערות וטיפים</button>
+            </div>
+          `}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ========================================
+// EVENT BINDING
+// ========================================
+function bindEvents() {
+  // Search
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', e => {
+      state.search = e.target.value;
+      render();
+      // Re-focus input after render
+      const newInput = document.getElementById('searchInput');
+      if (newInput) { newInput.focus(); newInput.selectionStart = newInput.selectionEnd = newInput.value.length; }
+    });
+  }
+  
+  const clearSearch = document.getElementById('clearSearch');
+  if (clearSearch) {
+    clearSearch.addEventListener('click', () => {
+      state.search = '';
+      render();
+    });
+  }
+  
+  // Categories
+  document.querySelectorAll('.cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.activeCategory = btn.dataset.category;
+      render();
+    });
+  });
+  
+  // Recipe cards
+  document.querySelectorAll('.recipe-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const id = parseInt(card.dataset.recipeId);
+      state.selectedRecipe = recipes.find(r => r.id === id);
+      state.editingInstructions = false;
+      state.editingNotes = false;
+      render();
+    });
+  });
+  
+  // Modal
+  const modal = document.getElementById('modal');
+  if (modal) {
+    modal.addEventListener('click', e => {
+      if (e.target === modal) closeModal();
+    });
+  }
+  
+  const modalHandle = document.getElementById('modalHandle');
+  if (modalHandle) {
+    modalHandle.addEventListener('click', closeModal);
+  }
+  
+  // Ingredient check
+  document.querySelectorAll('.ingredient-item').forEach(item => {
+    item.addEventListener('click', () => {
+      item.classList.toggle('checked');
+    });
+  });
+  
+  // Instructions editing
+  const editBtn = document.getElementById('editInstructions');
+  if (editBtn) {
+    editBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      state.editingInstructions = true;
+      render();
+      const ta = document.getElementById('instructionsEdit');
+      if (ta) ta.focus();
+    });
+  }
+  
+  const saveBtn = document.getElementById('saveInstructions');
+  if (saveBtn) {
+    saveBtn.addEventListener('click', () => {
+      const ta = document.getElementById('instructionsEdit');
+      if (ta && state.selectedRecipe) {
+        state.selectedRecipe.instructions = ta.value;
+        saveData();
+        state.editingInstructions = false;
+        showToast('הוראות ההכנה נשמרו ✓');
+        render();
+      }
+    });
+  }
+  
+  const cancelBtn = document.getElementById('cancelInstructions');
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      state.editingInstructions = false;
+      render();
+    });
+  }
+  
+  // Notes editing
+  const editNotesBtn = document.getElementById('editNotes');
+  const addNotesBtn = document.getElementById('addNotes');
+  [editNotesBtn, addNotesBtn].forEach(btn => {
+    if (btn) {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        state.editingNotes = true;
+        render();
+        const ta = document.getElementById('notesEdit');
+        if (ta) ta.focus();
+      });
+    }
+  });
+  
+  const saveNotesBtn = document.getElementById('saveNotes');
+  if (saveNotesBtn) {
+    saveNotesBtn.addEventListener('click', () => {
+      const ta = document.getElementById('notesEdit');
+      if (ta && state.selectedRecipe) {
+        state.selectedRecipe.notes = ta.value;
+        saveData();
+        state.editingNotes = false;
+        showToast('הערות נשמרו ✓');
+        render();
+      }
+    });
+  }
+  
+  const cancelNotesBtn = document.getElementById('cancelNotes');
+  if (cancelNotesBtn) {
+    cancelNotesBtn.addEventListener('click', () => {
+      state.editingNotes = false;
+      render();
+    });
+  }
+}
+
+function closeModal() {
+  state.selectedRecipe = null;
+  state.editingInstructions = false;
+  state.editingNotes = false;
+  render();
+}
+
+function showToast(msg) {
+  setTimeout(() => {
+    const toast = document.getElementById('toast');
+    if (toast) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+  }, 100);
+}
+
+// ========================================
+// PWA INSTALL
+// ========================================
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallBanner();
+});
+
+function showInstallBanner() {
+  const banner = document.createElement('div');
+  banner.className = 'install-banner show';
+  banner.innerHTML = `
+    <span class="install-text">התקיני את <strong>המטבח של שרון</strong> על הטלפון</span>
+    <button class="install-btn" id="installBtn">התקנה</button>
+    <button class="install-dismiss" id="dismissInstall">✕</button>
+  `;
+  document.body.appendChild(banner);
+  
+  document.getElementById('installBtn').addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      banner.remove();
+    }
+  });
+  
+  document.getElementById('dismissInstall').addEventListener('click', () => banner.remove());
+}
+
+// ========================================
+// SERVICE WORKER REGISTRATION
+// ========================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+// ========================================
+// KEYBOARD
+// ========================================
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && state.selectedRecipe) closeModal();
+});
+
+// ========================================
+// INIT
+// ========================================
+render();
+</script>
+</body>
+</html>
