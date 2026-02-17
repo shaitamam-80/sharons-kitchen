@@ -16,7 +16,6 @@ export default function RecipeModal({ recipe, onClose, onSaveInstructions, onSav
   const [notesText, setNotesText] = useState('')
   const [checkedIngredients, setCheckedIngredients] = useState<Set<number>>(new Set())
 
-  // Reset state when recipe changes
   useEffect(() => {
     setEditingInstructions(false)
     setEditingNotes(false)
@@ -27,7 +26,6 @@ export default function RecipeModal({ recipe, onClose, onSaveInstructions, onSav
     }
   }, [recipe])
 
-  // Close on Escape
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && recipe) onClose()
@@ -49,7 +47,7 @@ export default function RecipeModal({ recipe, onClose, onSaveInstructions, onSav
     if (recipe) {
       onSaveInstructions(recipe.id, instructionsText)
       setEditingInstructions(false)
-      onToast('הוראות ההכנה נשמרו ✓')
+      onToast('הוראות ההכנה נשמרו')
     }
   }
 
@@ -57,7 +55,7 @@ export default function RecipeModal({ recipe, onClose, onSaveInstructions, onSav
     if (recipe) {
       onSaveNotes(recipe.id, notesText)
       setEditingNotes(false)
-      onToast('הערות נשמרו ✓')
+      onToast('הערות נשמרו')
     }
   }
 
@@ -65,160 +63,151 @@ export default function RecipeModal({ recipe, onClose, onSaveInstructions, onSav
     <div
       className={`fixed inset-0 z-[200] flex items-end md:items-center justify-center transition-all duration-350
         ${recipe ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}
-      style={{ background: 'rgba(61, 43, 31, 0.4)', backdropFilter: 'blur(4px)' }}
+      style={{ background: 'rgba(44, 29, 19, 0.35)', backdropFilter: 'blur(6px)' }}
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
       <div
-        className={`bg-cream w-full max-w-[600px] max-h-[90vh] md:max-h-[85vh] overflow-y-auto transition-transform duration-400
-          rounded-t-[24px] md:rounded-[24px] md:mb-5`}
+        className={`w-full max-w-[600px] max-h-[92vh] md:max-h-[85vh] overflow-y-auto recipe-scroll
+          rounded-t-[22px] md:rounded-[22px] md:mb-5 transition-transform duration-400`}
         style={{
+          background: 'var(--color-cream)',
           transform: recipe ? 'translateY(0)' : 'translateY(100%)',
           WebkitOverflowScrolling: 'touch',
           transitionTimingFunction: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          boxShadow: 'var(--shadow-elevated)',
         }}
       >
         {recipe && (
           <>
-            {/* Handle */}
-            <div className="flex justify-center p-3 sticky top-0 bg-cream z-10 cursor-pointer" onClick={onClose}>
-              <span className="w-10 h-1 rounded-sm bg-brown/15" />
+            {/* Drag handle */}
+            <div className="flex justify-center pt-3 pb-1 sticky top-0 z-10 cursor-pointer" style={{ background: 'var(--color-cream)' }} onClick={onClose}>
+              <span className="w-9 h-[3px] rounded-full" style={{ background: 'rgba(44,29,19,0.12)' }} />
             </div>
 
-            {/* Header */}
-            <div className="px-6 pb-4 border-b border-brown/[0.06]">
-              <h2 className="font-suez text-[1.5rem] text-terracotta-dark mb-2">{recipe.name}</h2>
-              <div className="flex gap-3 flex-wrap">
+            {/* Header with gradient accent */}
+            <div className="px-6 pt-2 pb-5" style={{ borderBottom: '1px solid rgba(44,29,19,0.06)' }}>
+              <h2
+                className="font-suez text-[1.5rem] leading-snug mb-3"
+                style={{ color: 'var(--color-terracotta-dark)' }}
+              >
+                {recipe.name}
+              </h2>
+
+              <div className="flex gap-2.5 flex-wrap">
                 {recipe.temp && (
-                  <span className="flex items-center gap-1.5 text-[0.85rem] text-brown-light bg-white px-3 py-1.5 rounded-lg">
-                    🌡️ {recipe.temp}°
-                  </span>
+                  <MetaBadge icon="🌡️" text={`${recipe.temp}°`} />
                 )}
                 {recipe.time && (
-                  <span className="flex items-center gap-1.5 text-[0.85rem] text-brown-light bg-white px-3 py-1.5 rounded-lg">
-                    ⏱️ {recipe.time}
-                  </span>
+                  <MetaBadge icon="⏱️" text={recipe.time} />
                 )}
                 {recipe.source && (
-                  <span className="flex items-center gap-1.5 text-[0.85rem] text-brown-light bg-white px-3 py-1.5 rounded-lg">
-                    👩‍🍳 {recipe.source}
-                  </span>
+                  <MetaBadge icon="👩‍🍳" text={recipe.source} />
                 )}
               </div>
             </div>
 
             {/* Body */}
-            <div className="px-6 pt-5 pb-10 max-md:px-5">
+            <div className="px-6 pt-6 pb-12 max-md:px-5">
               {/* Ingredients */}
-              <h3 className="font-suez text-[1.1rem] text-brown mb-3 flex items-center gap-2">🧂 מרכיבים</h3>
-              <ul className="list-none mb-7">
+              <SectionTitle icon="🧂" title="מרכיבים" />
+              <ul className="list-none mb-8">
                 {recipe.ingredients.map((ing, i) => (
                   <li
                     key={i}
-                    className={`py-2.5 px-3 border-b border-brown/[0.04] text-[0.92rem] flex items-center gap-2.5 transition-colors duration-200 rounded-[6px] cursor-pointer hover:bg-terracotta/[0.04]
-                      ${checkedIngredients.has(i) ? 'opacity-40 line-through' : ''}`}
+                    className={`flex items-center gap-3 py-3 px-3 cursor-pointer rounded-lg transition-all duration-250 hover:bg-cream-dark/50
+                      ${checkedIngredients.has(i) ? 'ingredient-struck' : ''}`}
+                    style={{
+                      borderBottom: '1px solid rgba(44,29,19,0.03)',
+                      fontFamily: 'var(--font-body)',
+                      fontSize: '0.95rem',
+                      color: 'var(--color-brown)',
+                    }}
                     onClick={() => toggleIngredient(i)}
                   >
-                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${checkedIngredients.has(i) ? 'bg-sage' : 'bg-gold'}`} />
-                    {ing}
+                    {/* Custom checkbox */}
+                    <span
+                      className="shrink-0 w-[18px] h-[18px] rounded-[5px] flex items-center justify-center transition-all duration-200"
+                      style={{
+                        border: checkedIngredients.has(i)
+                          ? '2px solid var(--color-sage)'
+                          : '2px solid rgba(44,29,19,0.15)',
+                        background: checkedIngredients.has(i)
+                          ? 'var(--color-sage)'
+                          : 'transparent',
+                        color: '#fff',
+                        fontSize: '0.65rem',
+                      }}
+                    >
+                      {checkedIngredients.has(i) && '✓'}
+                    </span>
+                    <span>{ing}</span>
                   </li>
                 ))}
               </ul>
 
               {/* Instructions */}
-              <h3 className="font-suez text-[1.1rem] text-brown mb-3 flex items-center gap-2">📝 הוראות הכנה</h3>
-              <div>
+              <SectionTitle icon="📝" title="הוראות הכנה" />
+              <div className="mb-8">
                 {editingInstructions ? (
-                  <>
-                    <textarea
-                      className="w-full min-h-[150px] p-3.5 border-2 border-gold-light rounded-[10px] font-heebo text-[0.9rem] leading-[1.7] text-brown bg-white resize-y outline-none focus:border-terracotta transition-colors"
-                      dir="rtl"
-                      value={instructionsText}
-                      onChange={e => setInstructionsText(e.target.value)}
-                      autoFocus
-                    />
-                    <div className="flex gap-2 mt-2.5">
-                      <button
-                        className="px-6 py-2.5 bg-sage text-white border-none rounded-[10px] font-heebo text-[0.85rem] font-medium cursor-pointer hover:bg-[#7A8D6E] transition-colors"
-                        onClick={handleSaveInstructions}
-                      >
-                        שמירה
-                      </button>
-                      <button
-                        className="px-6 py-2.5 bg-cream-dark text-brown-light border-none rounded-[10px] font-heebo text-[0.85rem] cursor-pointer hover:bg-[#E8DDD0] transition-colors"
-                        onClick={() => { setEditingInstructions(false); setInstructionsText(recipe.instructions) }}
-                      >
-                        ביטול
-                      </button>
-                    </div>
-                  </>
+                  <EditArea
+                    value={instructionsText}
+                    onChange={setInstructionsText}
+                    onSave={handleSaveInstructions}
+                    onCancel={() => { setEditingInstructions(false); setInstructionsText(recipe.instructions) }}
+                  />
                 ) : recipe.instructions ? (
                   <>
-                    <div className="text-[0.9rem] leading-[1.8] text-brown-light whitespace-pre-wrap">{recipe.instructions}</div>
-                    <button
-                      className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-terracotta text-white border-none rounded-[10px] font-heebo text-[0.85rem] font-medium cursor-pointer mt-3 hover:bg-terracotta-dark transition-colors"
-                      onClick={() => setEditingInstructions(true)}
+                    <div
+                      className="whitespace-pre-wrap leading-[1.85]"
+                      style={{ fontSize: '0.95rem', color: 'var(--color-brown-light)', fontFamily: 'var(--font-body)' }}
                     >
-                      ✏️ עריכה
-                    </button>
+                      {recipe.instructions}
+                    </div>
+                    <EditButton onClick={() => setEditingInstructions(true)} />
                   </>
                 ) : (
-                  <div className="text-center p-6 bg-white rounded-[10px] border-2 border-dashed border-brown/10">
-                    <div className="text-[2rem] mb-1">📝</div>
-                    <p className="text-[0.85rem] text-gold mt-2">עדיין לא נוספו הוראות הכנה</p>
-                    <button
-                      className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-terracotta text-white border-none rounded-[10px] font-heebo text-[0.85rem] font-medium cursor-pointer mt-4 hover:bg-terracotta-dark transition-colors"
-                      onClick={() => setEditingInstructions(true)}
-                    >
-                      ✏️ הוסיפי הוראות
-                    </button>
-                  </div>
+                  <EmptyState
+                    text="עדיין לא נוספו הוראות הכנה"
+                    buttonText="הוסיפי הוראות"
+                    onClick={() => setEditingInstructions(true)}
+                  />
                 )}
               </div>
 
               {/* Notes */}
               {(recipe.notes || editingNotes) ? (
-                <div className="mt-7">
-                  <h3 className="font-suez text-[1.1rem] text-brown mb-3 flex items-center gap-2">💡 הערות וטיפים</h3>
+                <div>
+                  <SectionTitle icon="💡" title="הערות וטיפים" />
                   {editingNotes ? (
-                    <>
-                      <textarea
-                        className="w-full min-h-[150px] p-3.5 border-2 border-gold-light rounded-[10px] font-heebo text-[0.9rem] leading-[1.7] text-brown bg-white resize-y outline-none focus:border-terracotta transition-colors"
-                        dir="rtl"
-                        value={notesText}
-                        onChange={e => setNotesText(e.target.value)}
-                        autoFocus
-                      />
-                      <div className="flex gap-2 mt-2.5">
-                        <button
-                          className="px-6 py-2.5 bg-sage text-white border-none rounded-[10px] font-heebo text-[0.85rem] font-medium cursor-pointer hover:bg-[#7A8D6E] transition-colors"
-                          onClick={handleSaveNotes}
-                        >
-                          שמירה
-                        </button>
-                        <button
-                          className="px-6 py-2.5 bg-cream-dark text-brown-light border-none rounded-[10px] font-heebo text-[0.85rem] cursor-pointer hover:bg-[#E8DDD0] transition-colors"
-                          onClick={() => { setEditingNotes(false); setNotesText(recipe.notes) }}
-                        >
-                          ביטול
-                        </button>
-                      </div>
-                    </>
+                    <EditArea
+                      value={notesText}
+                      onChange={setNotesText}
+                      onSave={handleSaveNotes}
+                      onCancel={() => { setEditingNotes(false); setNotesText(recipe.notes) }}
+                    />
                   ) : (
                     <>
-                      <div className="text-[0.9rem] leading-[1.8] text-brown-light whitespace-pre-wrap">{recipe.notes}</div>
-                      <button
-                        className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-terracotta text-white border-none rounded-[10px] font-heebo text-[0.85rem] font-medium cursor-pointer mt-3 hover:bg-terracotta-dark transition-colors"
-                        onClick={() => setEditingNotes(true)}
+                      <div
+                        className="whitespace-pre-wrap leading-[1.85] p-4 rounded-xl"
+                        style={{
+                          fontSize: '0.92rem',
+                          color: 'var(--color-brown-light)',
+                          fontFamily: 'var(--font-body)',
+                          background: 'rgba(107,143,107,0.06)',
+                          borderRight: '3px solid var(--color-sage-light)',
+                        }}
                       >
-                        ✏️ עריכה
-                      </button>
+                        {recipe.notes}
+                      </div>
+                      <EditButton onClick={() => setEditingNotes(true)} />
                     </>
                   )}
                 </div>
               ) : (
-                <div className="mt-5">
+                <div>
                   <button
-                    className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-gold text-white border-none rounded-[10px] font-heebo text-[0.85rem] font-medium cursor-pointer hover:bg-gold-light transition-colors"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 border-none rounded-xl font-heebo text-[0.85rem] font-medium cursor-pointer transition-all duration-200 hover:opacity-80 active:scale-95"
+                    style={{ background: 'var(--color-cream-dark)', color: 'var(--color-brown-medium)' }}
                     onClick={() => setEditingNotes(true)}
                   >
                     💡 הוסיפי הערות וטיפים
@@ -229,6 +218,115 @@ export default function RecipeModal({ recipe, onClose, onSaveInstructions, onSav
           </>
         )}
       </div>
+    </div>
+  )
+}
+
+function SectionTitle({ icon, title }: { icon: string; title: string }) {
+  return (
+    <h3
+      className="flex items-center gap-2 mb-3.5"
+      style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', color: 'var(--color-brown)' }}
+    >
+      <span>{icon}</span>
+      {title}
+    </h3>
+  )
+}
+
+function MetaBadge({ icon, text }: { icon: string; text: string }) {
+  return (
+    <span
+      className="flex items-center gap-1.5 text-[0.82rem] px-3 py-1.5 rounded-lg"
+      style={{
+        background: '#FFFBF5',
+        color: 'var(--color-brown-light)',
+        border: '1px solid rgba(44,29,19,0.04)',
+      }}
+    >
+      <span className="text-[0.85rem]">{icon}</span>
+      {text}
+    </span>
+  )
+}
+
+function EditButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      className="inline-flex items-center gap-1.5 px-4 py-2 border-none rounded-lg font-heebo text-[0.82rem] font-medium cursor-pointer mt-3 transition-all duration-200 hover:opacity-80 active:scale-95"
+      style={{ background: 'var(--color-terracotta)', color: '#FFF8F0' }}
+      onClick={onClick}
+    >
+      ✏️ עריכה
+    </button>
+  )
+}
+
+function EditArea({ value, onChange, onSave, onCancel }: {
+  value: string
+  onChange: (v: string) => void
+  onSave: () => void
+  onCancel: () => void
+}) {
+  return (
+    <>
+      <textarea
+        className="w-full min-h-[150px] p-4 rounded-xl resize-y outline-none transition-all duration-200"
+        style={{
+          border: '2px solid var(--color-gold-light)',
+          fontFamily: 'var(--font-body)',
+          fontSize: '0.92rem',
+          lineHeight: 1.8,
+          color: 'var(--color-brown)',
+          background: '#FFFBF5',
+        }}
+        onFocus={e => { e.currentTarget.style.borderColor = 'var(--color-terracotta-light)' }}
+        onBlur={e => { e.currentTarget.style.borderColor = 'var(--color-gold-light)' }}
+        dir="rtl"
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        autoFocus
+      />
+      <div className="flex gap-2 mt-3">
+        <button
+          className="px-6 py-2.5 border-none rounded-xl font-heebo text-[0.85rem] font-medium cursor-pointer transition-all duration-200 hover:opacity-85 active:scale-95"
+          style={{ background: 'var(--color-sage)', color: '#fff' }}
+          onClick={onSave}
+        >
+          שמירה
+        </button>
+        <button
+          className="px-6 py-2.5 border-none rounded-xl font-heebo text-[0.85rem] cursor-pointer transition-all duration-200 hover:opacity-80"
+          style={{ background: 'var(--color-cream-dark)', color: 'var(--color-brown-medium)' }}
+          onClick={onCancel}
+        >
+          ביטול
+        </button>
+      </div>
+    </>
+  )
+}
+
+function EmptyState({ text, buttonText, onClick }: { text: string; buttonText: string; onClick: () => void }) {
+  return (
+    <div
+      className="text-center py-8 px-6 rounded-xl"
+      style={{
+        background: '#FFFBF5',
+        border: '2px dashed rgba(44,29,19,0.08)',
+      }}
+    >
+      <div className="text-[2rem] mb-2">📝</div>
+      <p className="text-[0.85rem] mb-4" style={{ color: 'var(--color-brown-medium)', fontFamily: 'var(--font-body)' }}>
+        {text}
+      </p>
+      <button
+        className="inline-flex items-center gap-1.5 px-5 py-2.5 border-none rounded-xl font-heebo text-[0.85rem] font-medium cursor-pointer transition-all duration-200 hover:opacity-85 active:scale-95"
+        style={{ background: 'var(--color-terracotta)', color: '#FFF8F0' }}
+        onClick={onClick}
+      >
+        ✏️ {buttonText}
+      </button>
     </div>
   )
 }

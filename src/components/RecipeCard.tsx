@@ -3,47 +3,73 @@ import type { Recipe } from '@/types/recipe'
 interface RecipeCardProps {
   recipe: Recipe
   onClick: () => void
+  staggerIndex?: number
 }
 
-export default function RecipeCard({ recipe, onClick }: RecipeCardProps) {
-  const preview = recipe.ingredients.slice(0, 4).join(' · ')
+export default function RecipeCard({ recipe, onClick, staggerIndex = 0 }: RecipeCardProps) {
+  const preview = recipe.ingredients.slice(0, 3).join(' · ')
+  const hasContent = !!(recipe.instructions || recipe.notes)
+  const staggerClass = staggerIndex <= 6 ? `stagger-${staggerIndex}` : ''
 
   return (
     <article
-      className="bg-white rounded-[16px] p-[18px] cursor-pointer transition-all duration-300 border border-brown/5 relative overflow-hidden animate-fade-in-up hover:-translate-y-[3px] hover:shadow-lg active:-translate-y-[1px] group"
-      style={{ boxShadow: '0 2px 8px rgba(61, 43, 31, 0.08)' }}
+      className={`relative cursor-pointer transition-all duration-300 group opacity-0 animate-fade-in-up hover:-translate-y-0.5 active:scale-[0.98] ${staggerClass}`}
+      style={{
+        background: '#FFFBF5',
+        borderRadius: '14px',
+        padding: '20px',
+        boxShadow: '0 1px 3px rgba(44,29,19,0.06), 0 4px 12px rgba(44,29,19,0.04)',
+        border: '1px solid rgba(44, 29, 19, 0.04)',
+      }}
       onClick={onClick}
     >
-      {/* Right border accent on hover */}
-      <div className="absolute top-0 right-0 w-1 h-full bg-terracotta opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      {/* Top accent on hover */}
+      <div
+        className="absolute top-0 right-4 left-4 h-[2px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        style={{ background: 'linear-gradient(90deg, var(--color-terracotta), var(--color-gold))' }}
+      />
 
-      {recipe.instructions && (
-        <span className="absolute top-3 left-3 w-2 h-2 rounded-full bg-sage" title="יש הוראות הכנה" />
+      {hasContent && (
+        <span
+          className="absolute top-4 left-4 w-[7px] h-[7px] rounded-full"
+          style={{ background: 'var(--color-sage)', boxShadow: '0 0 0 2px rgba(107,143,107,0.15)' }}
+          title="יש הוראות הכנה"
+        />
       )}
 
-      <div className="flex justify-between items-start mb-2.5">
-        <h3 className="font-suez text-[1.05rem] text-brown leading-[1.4] flex-1">{recipe.name}</h3>
-      </div>
+      <h3
+        className="leading-snug mb-2"
+        style={{ fontFamily: 'var(--font-display)', fontSize: '1.05rem', color: 'var(--color-brown)' }}
+      >
+        {recipe.name}
+      </h3>
 
-      <div className="flex gap-2.5 flex-wrap">
-        {recipe.temp && (
-          <span className="inline-flex items-center gap-1 text-[0.72rem] text-brown-light bg-cream px-2 py-0.5 rounded-[6px]">
-            <span className="text-[0.8rem]">🌡️</span>{recipe.temp}°
-          </span>
-        )}
-        {recipe.time && (
-          <span className="inline-flex items-center gap-1 text-[0.72rem] text-brown-light bg-cream px-2 py-0.5 rounded-[6px]">
-            <span className="text-[0.8rem]">⏱️</span>{recipe.time}
-          </span>
-        )}
-        {recipe.source && (
-          <span className="inline-flex items-center gap-1 text-[0.72rem] text-brown-light bg-cream px-2 py-0.5 rounded-[6px]">
-            <span className="text-[0.8rem]">👩‍🍳</span>{recipe.source}
-          </span>
-        )}
-      </div>
+      {(recipe.temp || recipe.time || recipe.source) && (
+        <div className="flex gap-2 flex-wrap mb-2.5">
+          {recipe.temp && (
+            <span className="inline-flex items-center gap-1 text-[0.72rem] px-2 py-[3px] rounded-md" style={{ color: 'var(--color-brown-medium)', background: 'var(--color-cream-dark)' }}>
+              🌡️ {recipe.temp}°
+            </span>
+          )}
+          {recipe.time && (
+            <span className="inline-flex items-center gap-1 text-[0.72rem] px-2 py-[3px] rounded-md" style={{ color: 'var(--color-brown-medium)', background: 'var(--color-cream-dark)' }}>
+              ⏱️ {recipe.time}
+            </span>
+          )}
+          {recipe.source && (
+            <span className="inline-flex items-center gap-1 text-[0.72rem] px-2 py-[3px] rounded-md" style={{ color: 'var(--color-brown-medium)', background: 'var(--color-cream-dark)' }}>
+              👩‍🍳 {recipe.source}
+            </span>
+          )}
+        </div>
+      )}
 
-      <p className="text-[0.78rem] text-brown-light/70 leading-[1.5] mt-2 line-clamp-2">{preview}</p>
+      <p
+        className="line-clamp-2 leading-relaxed"
+        style={{ fontSize: '0.8rem', color: 'var(--color-brown-medium)', opacity: 0.65, fontFamily: 'var(--font-body)' }}
+      >
+        {preview}
+      </p>
     </article>
   )
 }
