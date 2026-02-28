@@ -117,3 +117,43 @@ h1, h2, h3 {
   text-decoration-thickness: 1.5px;
   transition: all 0.3s ease;
 }
+
+/* Print stylesheet (Sprint 6) */
+@media print {
+  /* Hide everything except the modal */
+  header, nav, main, .install-banner, .toast { display: none !important; }
+
+  /* Modal takes full page */
+  .recipe-modal-overlay {
+    position: static !important;
+    background: none !important;
+    backdrop-filter: none !important;
+  }
+  .recipe-modal-content {
+    max-height: none !important;
+    max-width: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    transform: none !important;
+  }
+
+  /* Hide edit/print buttons and multiplier controls */
+  .edit-button, .print-button { display: none !important; }
+
+  /* Typography for print */
+  body { font-size: 12pt; color: black; }
+  body::before { display: none !important; }
+  h2 { font-size: 18pt; }
+  h3 { font-size: 14pt; }
+
+  /* Checkbox as empty square */
+  .ingredient-checkbox { display: none !important; }
+  .ingredient-item::before { content: '\2610  '; }
+
+  /* Reset ingredient struck style for print */
+  .ingredient-struck {
+    opacity: 1 !important;
+    text-decoration: none !important;
+  }
+}

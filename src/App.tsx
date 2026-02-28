@@ -53,6 +53,7 @@ export default function App() {
         onClose={store.closeRecipe}
         onSaveInstructions={store.saveInstructions}
         onSaveNotes={store.saveNotes}
+        onSaveIngredients={store.saveIngredients}
         onToast={showToast}
       />
 
