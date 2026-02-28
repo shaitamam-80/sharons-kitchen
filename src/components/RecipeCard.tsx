@@ -10,6 +10,7 @@ export default function RecipeCard({ recipe, onClick, staggerIndex = 0 }: Recipe
   const preview = recipe.ingredients.slice(0, 3).join(' · ')
   const hasContent = !!(recipe.instructions || recipe.notes)
   const staggerClass = staggerIndex <= 6 ? `stagger-${staggerIndex}` : ''
+  const ingredientCount = recipe.ingredients.length
 
   return (
     <article
@@ -29,12 +30,22 @@ export default function RecipeCard({ recipe, onClick, staggerIndex = 0 }: Recipe
         style={{ background: 'linear-gradient(90deg, var(--color-terracotta), var(--color-sage))' }}
       />
 
+      {/* Content badge (Sprint 5) */}
       {hasContent && (
         <span
-          className="absolute top-4 left-4 w-[7px] h-[7px] rounded-full"
-          style={{ background: 'var(--color-terracotta)', boxShadow: '0 0 0 2px rgba(43,122,120,0.15)' }}
-          title="יש הוראות הכנה"
-        />
+          className="absolute top-4 left-4"
+          style={{
+            fontSize: '0.68rem',
+            padding: '2px 8px',
+            borderRadius: '6px',
+            background: 'rgba(43,122,120,0.1)',
+            color: 'var(--color-terracotta)',
+            fontFamily: 'var(--font-ui)',
+            fontWeight: 500,
+          }}
+        >
+          יש הוראות
+        </span>
       )}
 
       <h3
@@ -64,12 +75,30 @@ export default function RecipeCard({ recipe, onClick, staggerIndex = 0 }: Recipe
         </div>
       )}
 
+      {/* Ingredient count (Sprint 5) */}
+      <p
+        className="mb-1"
+        style={{ fontSize: '0.75rem', color: 'var(--color-brown-medium)', fontFamily: 'var(--font-ui)' }}
+      >
+        {ingredientCount} מרכיבים
+      </p>
+
       <p
         className="line-clamp-2 leading-relaxed"
         style={{ fontSize: '0.8rem', color: 'var(--color-brown-medium)', opacity: 0.65, fontFamily: 'var(--font-body)' }}
       >
         {preview}
       </p>
+
+      {/* First instruction line preview (Sprint 5) */}
+      {recipe.instructions && (
+        <p
+          className="line-clamp-1 mt-1.5"
+          style={{ fontSize: '0.75rem', color: 'var(--color-brown-light)', opacity: 0.5, fontFamily: 'var(--font-body)' }}
+        >
+          {recipe.instructions.split('\n')[0]}
+        </p>
+      )}
     </article>
   )
 }

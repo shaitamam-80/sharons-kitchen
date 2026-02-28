@@ -7,7 +7,7 @@ const STORAGE_KEY = 'sharons-kitchen-data'
 const LEGACY_KEY = 'sharons-kitchen-data' // same key, compatible format
 
 interface RecipeOverrides {
-  [id: number]: { instructions?: string; notes?: string }
+  [id: number]: { instructions?: string; notes?: string; ingredients?: string[] }
 }
 
 function migrateLegacyData(): RecipeOverrides {
@@ -32,6 +32,7 @@ export function useRecipeStore() {
       ...r,
       instructions: overrides[r.id]?.instructions ?? r.instructions,
       notes: overrides[r.id]?.notes ?? r.notes,
+      ingredients: overrides[r.id]?.ingredients ?? r.ingredients,
     })),
     [overrides]
   )
@@ -84,6 +85,13 @@ export function useRecipeStore() {
     }))
   }, [setOverrides])
 
+  const saveIngredients = useCallback((recipeId: number, ingredients: string[]) => {
+    setOverrides(prev => ({
+      ...prev,
+      [recipeId]: { ...prev[recipeId], ingredients },
+    }))
+  }, [setOverrides])
+
   const changesCount = useMemo(() => Object.keys(overrides).length, [overrides])
 
   const exportChanges = useCallback(async (): Promise<{ count: number; error?: string }> => {
@@ -95,6 +103,7 @@ export function useRecipeStore() {
         name: recipe?.name ?? `מתכון ${id}`,
         ...(override.instructions !== undefined ? { instructions: override.instructions } : {}),
         ...(override.notes !== undefined ? { notes: override.notes } : {}),
+        ...(override.ingredients !== undefined ? { ingredients: override.ingredients } : {}),
       }
     })
 
@@ -183,6 +192,7 @@ export function useRecipeStore() {
     closeRecipe,
     saveInstructions,
     saveNotes,
+    saveIngredients,
     exportChanges,
     changesCount,
   }
